@@ -1,0 +1,19 @@
+{
+  "name": "liteUpload",
+  "homepage": "https://github.com/buuum/liteUpload",
+  "description": "Simple file upload",
+  "main": [
+    "liteupload/js/ajaxqueu.js",
+    "liteupload/js/liteupload.min.js"
+  ],
+  "keywords": [
+    "upload"
+  ],
+  "authors": [
+    "buuum"
+  ],
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "license": "MIT"
+}
