@@ -1,7 +1,10 @@
 $.fn.liteUpload = function(userOptions) {
-  var defaults, options, progressHandlingFunction;
+  var checkFiles, defaults, options, progressHandlingFunction;
   defaults = {
     script: null,
+    maxSize: null,
+    minSize: null,
+    allowedFileTypes: null,
     onClick: function(button) {
       return true;
     },
@@ -16,6 +19,8 @@ $.fn.liteUpload = function(userOptions) {
   options = $.extend(defaults, userOptions);
   progressHandlingFunction = function(e) {
     var percent;
+    console.log(e.lengthComputable);
+    console.log(e);
     if (e.lengthComputable) {
       percent = Number((e.loaded * 100 / e.total).toFixed(2));
       options.onProgress(percent, options.fileActual, options.fileTotal);
@@ -27,16 +32,36 @@ $.fn.liteUpload = function(userOptions) {
   this.each(function(i) {
     var $this, button;
     $this = $(this);
-    $this.css('position', 'absolute');
-    $this.css('visibility', 'hidden');
-    button = $this.next('a');
-    button.on('click', function(e) {
-      e.preventDefault();
-      if (options.onClick($(this))) {
-        $(this).prev('input[type="file"]').trigger('click');
-      }
-    });
+    if ($this.css('position') !== 'absolute' && $this.css('visibility') !== 'hidden') {
+      $this.css('position', 'absolute');
+      $this.css('visibility', 'hidden');
+      button = $this.next('a');
+      button.on('click', function(e) {
+        e.preventDefault();
+        if (options.onClick($(this))) {
+          $(this).prev('input[type="file"]').trigger('click');
+        }
+      });
+    }
   });
+  checkFiles = function(files) {
+    var file, i;
+    i = 0;
+    while (i < files.length) {
+      file = files[i];
+      if (options.maxSize) {
+        if (file.size > options.maxSize * 1024) {
+          console.log('max size execed');
+        }
+      }
+      if (options.minSize) {
+        if (file.size < options.minSize * 1024) {
+          console.log('min is ' + options.minSize * 1024);
+        }
+      }
+      i++;
+    }
+  };
   this.change(function() {
     var $this, button, file, formData, i;
     $this = $(this);
@@ -48,6 +73,7 @@ $.fn.liteUpload = function(userOptions) {
     if (!options.onSelectFiles(this.files)) {
       return;
     }
+    checkFiles(this.files);
     options.fileActual = 1;
     i = 0;
     while (i < this.files.length) {
