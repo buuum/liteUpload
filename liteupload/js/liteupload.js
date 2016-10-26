@@ -9,7 +9,9 @@ $.fn.liteUpload = function(userOptions) {
       return true;
     },
     onBefore: function(button) {},
-    onSelectFiles: function(files) {},
+    onSelectFiles: function(files) {
+      return true;
+    },
     onProgress: function(percent, fileactual, filetotal) {},
     onEnd: function(button) {},
     onSuccess: function(response, fileactual, button) {},
@@ -19,8 +21,6 @@ $.fn.liteUpload = function(userOptions) {
   options = $.extend(defaults, userOptions);
   progressHandlingFunction = function(e) {
     var percent;
-    console.log(e.lengthComputable);
-    console.log(e);
     if (e.lengthComputable) {
       percent = Number((e.loaded * 100 / e.total).toFixed(2));
       options.onProgress(percent, options.fileActual, options.fileTotal);
@@ -51,12 +51,12 @@ $.fn.liteUpload = function(userOptions) {
       file = files[i];
       if (options.maxSize) {
         if (file.size > options.maxSize * 1024) {
-          console.log('max size execed');
+          return 'max size exceded';
         }
       }
       if (options.minSize) {
         if (file.size < options.minSize * 1024) {
-          console.log('min is ' + options.minSize * 1024);
+          return 'min is ' + options.minSize * 1024;
         }
       }
       i++;
@@ -99,9 +99,7 @@ $.fn.liteUpload = function(userOptions) {
         },
         cache: false,
         success: function(response) {
-          var $response;
-          $response = jQuery.parseJSON(response);
-          options.onSuccess($response, options.fileActual, button);
+          options.onSuccess(response, options.fileActual, button);
           options.fileActual++;
         },
         fail: function(jqXHR) {
