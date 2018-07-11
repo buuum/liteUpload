@@ -7,7 +7,7 @@
     dfd = $.Deferred();
     promise = dfd.promise();
     doRequest = function(next) {
-      jqXHR = $.ajax(ajaxOpts).done(dfd.resolve).fail(dfd.reject).error(dfd.promise).then(next, next);
+      jqXHR = $.ajax(ajaxOpts).done(dfd.resolve).fail(dfd.reject).then(next, next);
     };
     ajaxQueue.queue(doRequest);
     promise.abort = function(statusText) {
